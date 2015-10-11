@@ -8,21 +8,12 @@
 #define Y_MIN_PIN          19
 #define Y_MAX_PIN          -1
 
-#define Z_STEP_PIN         3
-#define Z_DIR_PIN          2
-#define Z_MIN_PIN          20
-#define Z_MAX_PIN          -1
-
 #define X_ENABLE_PIN       14
 #define Y_ENABLE_PIN       14
-#define Z_ENABLE_PIN       26
 
 #define SCK_PIN          7
 #define MISO_PIN         6
 #define MOSI_PIN         5
-#define E0_STEP_PIN         1
-#define E0_DIR_PIN          0
-#define E0_ENABLE_PIN      14
 
 int MoveX;
 int MoveY;
@@ -38,9 +29,6 @@ int StepX;
 int StepY;
 unsigned long nowtime1;
 unsigned long nowtime2;
-//double Cnowtime1;
-//double Cnowtime2;
-//int Compare = 1;
 String comdata="";
 int Mdirection=0;
 int Vbode=100;
@@ -59,16 +47,6 @@ pinMode(Y_ENABLE_PIN, OUTPUT);
 digitalWrite(Y_DIR_PIN,HIGH);//needed to reset
 digitalWrite(X_ENABLE_PIN,LOW);
 digitalWrite(Y_ENABLE_PIN,LOW);
-pinMode(Z_STEP_PIN, OUTPUT);
-pinMode(Z_DIR_PIN, OUTPUT);//needed to reset
-pinMode(Z_ENABLE_PIN, OUTPUT);
-digitalWrite(Z_DIR_PIN,HIGH);
-digitalWrite(Z_ENABLE_PIN,LOW);
-pinMode(E0_STEP_PIN, OUTPUT);
-pinMode(E0_DIR_PIN, OUTPUT);//needed to reset
-pinMode(E0_ENABLE_PIN, OUTPUT);
-digitalWrite(E0_DIR_PIN,HIGH);
-digitalWrite(E0_ENABLE_PIN,LOW);
 Serial.begin(115200);
 }
   
@@ -108,13 +86,11 @@ void loop()
   if(CurrentdestinationX < LastdestinationX) 
   {
     digitalWrite(X_DIR_PIN,LOW);
-    digitalWrite(Z_DIR_PIN,LOW);
   }
   MoveY = a*(CurrentdestinationY - LastdestinationY);
   if(CurrentdestinationY < LastdestinationY)
  {
    digitalWrite(Y_DIR_PIN,LOW);
-   digitalWrite(E0_DIR_PIN,LOW);  
  }
   StepX=abs(b*MoveX);
   StepY=abs(b*MoveY);
@@ -151,10 +127,8 @@ void loop()
   {while(micros()>=nowtime1&&StepX!=0)
     {
      digitalWrite(X_STEP_PIN,HIGH);
-     digitalWrite(Z_STEP_PIN,HIGH);
      delayMicroseconds(20);
      digitalWrite(X_STEP_PIN,LOW);
-     digitalWrite(Z_STEP_PIN,LOW);
      StepX-=1;
     // Serial.println(StepX);
     nowtime1+=100;
@@ -162,10 +136,8 @@ void loop()
     while(micros()>=nowtime2&&StepY!=0)
      {
       digitalWrite(Y_STEP_PIN,HIGH);
-      digitalWrite(E0_STEP_PIN,HIGH);
       delayMicroseconds(20);
       digitalWrite(Y_STEP_PIN,LOW);
-      digitalWrite(E0_STEP_PIN,LOW);
       StepY-=1;
       nowtime2+=Vbode;
      }
@@ -175,20 +147,16 @@ void loop()
     while(millis()>=nowtime1&&StepY!=0)
     {
      digitalWrite(Y_STEP_PIN,HIGH);
-     digitalWrite(E0_STEP_PIN,HIGH);
      delayMicroseconds(20);
      digitalWrite(Y_STEP_PIN,LOW);
-     digitalWrite(E0_STEP_PIN,LOW);
      StepY-=1;
      nowtime1+=100;
     }
     while(millis()>=nowtime2&&StepX!=0)
      {
      digitalWrite(X_STEP_PIN,HIGH);
-     digitalWrite(Z_STEP_PIN,HIGH);
      delayMicroseconds(20);
      digitalWrite(X_STEP_PIN,LOW);
-     digitalWrite(Z_STEP_PIN,LOW);
       StepX-=1;
       nowtime2+=Vbode;
      }
@@ -197,8 +165,6 @@ void loop()
  
  digitalWrite(X_DIR_PIN,HIGH);
  digitalWrite(Y_DIR_PIN,HIGH);
- digitalWrite(Z_DIR_PIN,HIGH);
- digitalWrite(E0_DIR_PIN,HIGH);
   LastdestinationX=CurrentdestinationX;
   LastdestinationY=CurrentdestinationY;
  CurrentdestinationX = 0;
